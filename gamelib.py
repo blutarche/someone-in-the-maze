@@ -12,7 +12,6 @@ class SimpleGame(object):
         self.window_size = window_size
         self.fps = fps
         self.background_color = background_color
-
         self.is_terminated = False
 
     def __game_init(self):
