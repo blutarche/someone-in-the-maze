@@ -17,8 +17,10 @@ class MazeGame(gamelib.SimpleGame):
     HEIGHT = 700
     WIDTH = 1300
 
+    TIME = 120000
+
     def __init__(self):
-        super(MazeGame, self).__init__('cup noodle Maze', MazeGame.BLACK, window_size=(MazeGame.WIDTH, MazeGame.HEIGHT))
+        super(MazeGame, self).__init__('Collapsing Maze', MazeGame.BLACK, window_size=(MazeGame.WIDTH, MazeGame.HEIGHT))
         self.piece_size = MazeGame.WIDTH / MazeGame.COLUMN
         self.is_started = False
         self.is_lose = False
@@ -34,8 +36,7 @@ class MazeGame(gamelib.SimpleGame):
 
     def init(self):
         super(MazeGame, self).init()
-        self.time = 120999
-        self.render_string()
+        self.time = MazeGame.TIME + 999
         self.map = Map(row=MazeGame.ROW, 
                         column=MazeGame.COLUMN, 
                         piece_size=self.piece_size)
@@ -44,7 +45,6 @@ class MazeGame(gamelib.SimpleGame):
     def update(self):
         if self.is_started:
             self.update_time()
-            self.render_time()
             self.check_finish()
 
     def update_time(self):
@@ -61,16 +61,8 @@ class MazeGame(gamelib.SimpleGame):
             self.is_win = True
             self.is_started = False
 
-    def render_string(self):
-        self.render_time()
-
-    def render_time(self):
-        time_in_sec = self.time/1000
-        seconds = time_in_sec % 60
-        minutes = time_in_sec / 60
-        self.time_image = self.font.render("%d:%02d" % (minutes, seconds), 0, MazeGame.WHITE)
-
     def render(self, surface):
+        self.render_time()
         if self.is_started:
             self.render_game(surface)
         elif self.is_lose:
@@ -80,6 +72,12 @@ class MazeGame(gamelib.SimpleGame):
         else:
             self.render_start(surface)
 
+    def render_time(self):
+        time_in_sec = self.time/1000
+        seconds = time_in_sec % 60
+        minutes = time_in_sec / 60
+        self.time_image = self.font.render("%d:%02d" % (minutes, seconds), 0, MazeGame.WHITE)
+
     def render_game(self, surface):
         self.map.render(surface)
         self.player.render(surface)
@@ -87,11 +85,22 @@ class MazeGame(gamelib.SimpleGame):
 
     def render_gameover(self, surface):
         pass
+
     def render_win(self, surface):
         self.map.render(surface)
         self.player.render(surface)
         surface.fill((128,255,128))
-        surface.blit(self.time_image, (MazeGame.WIDTH/2 - 25, MazeGame.HEIGHT - 50))
+        time_in_sec = (MazeGame.TIME - self.time)/1000
+        seconds = time_in_sec % 60
+        minutes = time_in_sec / 60
+        self.render_message(surface, "Congratulation!", 90, 70)
+        self.render_message(surface, "You finished maze in", 125, 50)
+        self.render_message(surface, "%d:%02d" % (minutes, seconds), 25, 10)
+        self.render_message(surface, "Press Space to restart", 135, -40)
+
+    def render_message(self, surface, message, x, y):
+        self.message_image = self.font.render(message, 0, MazeGame.BLACK)
+        surface.blit(self.message_image, (MazeGame.WIDTH/2 - x, MazeGame.HEIGHT/2 - y))
 
     def render_start(self, surface):
         self.greeting_image = self.font.render("Press Space to start", 0, MazeGame.WHITE)
