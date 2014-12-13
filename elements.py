@@ -15,9 +15,10 @@ class Map(object):
                             h=(row-1)/2)
         self.piece_size = piece_size
 
-    def isplayer_cangoto(self, x, y):
+    def walkto(self, x, y, before_x, before_y):
         if self.map[y][x]>0:
             return True
+            self.map[before_y][before_x] -= 1
         else:
             return False
 
@@ -48,25 +49,31 @@ class Player(object):
         (self.x, self.y) = pos
         self.color = color
         self.map = gamemap
+        self.size = size
 
     def up(self):
-        if is_walkable(self.x, self.y - 1):
+        if is_walkable(self.x, self.y - 1, self.x, self.y):
             self.y = self.y - 1
 
     def down(self):
-        if is_walkable(self.x, self.y + 1):
+        if is_walkable(self.x, self.y + 1, self.x, self.y):
             self.y = self.y + 1
 
     def left(self):
-        if is_walkable(self.x - 1, self.y):
+        if is_walkable(self.x - 1, self.y, self.x, self.y):
             self.x = self.x - 1
 
     def right(self):
-        if is_walkable(self.x + 1, self.y):
+        if is_walkable(self.x + 1, self.y, self.x, self.y):
             self.x = self.x + 1
 
-    def is_walkable(self, x, y):
-        return self.map.isplayer_cangoto(self.x, self.y)
+    def is_walkable(self, x, y, before_x, before_y):
+        print "Walk from (%d,%d) to (%d,%d)" % (x, y, before_x, before_y)
+        return self.map.walkto(x, y, before_x, before_y)
 
     def render(self, surface):
-        pos = (int(self.x),int(self.y))
+        x = self.x + 1
+        y = self.y + 3
+        radius = self.size / 2
+        pos_render = (x*self.size + radius , y*self.size + radius)
+        pygame.draw.circle(surface, self.color, pos_render, radius, 0)
