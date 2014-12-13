@@ -5,7 +5,7 @@ from maze_algo import make_maze
 
 class Map(object):
 
-    WALK_LIMIT = 5
+    WALK_LIMIT = 3
 
     def __init__(self, row, column, piece_size):
         self.row = row
@@ -17,8 +17,14 @@ class Map(object):
         self.piece_size = piece_size
 
     def walkto(self, x, y, before_x, before_y):
-        if self.map[y][x]>0:
+        if self.map[y][x] != 0:
             self.map[before_y][before_x] -= 1
+            return True
+        else:
+            return False
+
+    def is_atgoal(self, x, y):
+        if self.map[y][x] == -1:
             return True
         else:
             return False
@@ -51,6 +57,7 @@ class Player(object):
         self.color = color
         self.map = gamemap
         self.size = size
+        self.atgoal = False
 
     def up(self):
         if self.is_walkable(self.x, self.y - 1, self.x, self.y):
@@ -70,11 +77,18 @@ class Player(object):
 
     def is_walkable(self, x, y, before_x, before_y):
         print "Walk from (%d,%d) to (%d,%d)" % (before_x, before_y, x ,y)
-        return self.map.walkto(x, y, before_x, before_y)
+        can_walk = self.map.walkto(x, y, before_x, before_y)
+        if can_walk and self.map.is_atgoal(x, y):
+            self.atgoal = True
+
+        return can_walk
+
+    def is_atgoal(self):
+        return self.atgoal
 
     def render(self, surface):
         x = self.x + 1
         y = self.y + 1
         radius = self.size / 2
         pos_render = (x*self.size + radius , y*self.size + radius)
-        pygame.draw.circle(surface, self.color, pos_render, radius, 0)
+        pygame.draw.circle(surface, self.color, pos_render, radius-1, 0)

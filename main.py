@@ -11,44 +11,55 @@ class MazeGame(gamelib.SimpleGame):
     GREEN = pygame.Color('green')
     RED   = pygame.Color('red')
 
-    HEIGHT = 600
-    WIDTH = 900
+    ROW = 31
+    COLUMN = 63
 
-    ROW = 41
-    COLUMN = 73
+    HEIGHT = 700
+    WIDTH = 1300
 
     def __init__(self):
-        super(MazeGame, self).__init__('3 minutes MAZE', MazeGame.BLACK, window_size=(MazeGame.WIDTH, MazeGame.HEIGHT))
+        super(MazeGame, self).__init__('cup noodle Maze', MazeGame.BLACK, window_size=(MazeGame.WIDTH, MazeGame.HEIGHT))
         self.piece_size = MazeGame.WIDTH / MazeGame.COLUMN
-        self.map = Map(row=MazeGame.ROW, 
-                        column=MazeGame.COLUMN, 
-                        piece_size=self.piece_size)
-        self.player = Player(size=self.piece_size, pos=(1,1), color=MazeGame.RED, gamemap=self.map)
         self.is_started = False
-        self.is_end = False
+        self.is_lose = False
+        self.is_win = False
         self.last_ticks = 0
+        self.time_win = 0
 
     def start_game(self):
         self.init()
         self.is_started = True
-        self.is_end = False
+        self.is_lose = False
+        self.is_win = False
 
     def init(self):
         super(MazeGame, self).init()
-        self.time = 180999
+        self.time = 120999
         self.render_string()
+        self.map = Map(row=MazeGame.ROW, 
+                        column=MazeGame.COLUMN, 
+                        piece_size=self.piece_size)
+        self.player = Player(size=self.piece_size, pos=(61,28), color=MazeGame.RED, gamemap=self.map)
 
     def update(self):
-        self.update_time()
-        self.render_time()
+        if self.is_started:
+            self.update_time()
+            self.render_time()
+            self.check_finish()
 
     def update_time(self):
         this_tick = pygame.time.get_ticks()
-        if self.is_started:
-            self.time -= this_tick - self.last_ticks
-        else:
-            pass
+        self.time -= this_tick - self.last_ticks
         self.last_ticks = this_tick
+
+    def check_finish(self):
+        if self.time <= 0:
+            self.is_lose = True
+            self.is_started = False
+        elif self.player.is_atgoal():
+            self.time_win = 180000 - self.time
+            self.is_win = True
+            self.is_started = False
 
     def render_string(self):
         self.render_time()
@@ -57,26 +68,34 @@ class MazeGame(gamelib.SimpleGame):
         time_in_sec = self.time/1000
         seconds = time_in_sec % 60
         minutes = time_in_sec / 60
-        self.time_image = self.font.render("Time %d:%02d" % (minutes, seconds), 0, MazeGame.WHITE)
+        self.time_image = self.font.render("%d:%02d" % (minutes, seconds), 0, MazeGame.WHITE)
 
     def render(self, surface):
         if self.is_started:
             self.render_game(surface)
-        elif self.is_end:
+        elif self.is_lose:
             self.render_gameover(surface)
+        elif self.is_win:
+            self.render_win(surface)
         else:
             self.render_start(surface)
 
     def render_game(self, surface):
         self.map.render(surface)
         self.player.render(surface)
-        surface.blit(self.time_image, (20, MazeGame.HEIGHT - 50))
+        surface.blit(self.time_image, (MazeGame.WIDTH/2 - 25, MazeGame.HEIGHT - 50))
 
     def render_gameover(self, surface):
         pass
+    def render_win(self, surface):
+        self.map.render(surface)
+        self.player.render(surface)
+        surface.fill((128,255,128))
+        surface.blit(self.time_image, (MazeGame.WIDTH/2 - 25, MazeGame.HEIGHT - 50))
 
     def render_start(self, surface):
-        pass
+        self.greeting_image = self.font.render("Press Space to start", 0, MazeGame.WHITE)
+        surface.blit(self.greeting_image, (MazeGame.WIDTH/2 - 120, MazeGame.HEIGHT/2 - 10))
 
     def on_key_up(self,key):
         if self.is_started:
