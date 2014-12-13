@@ -43,8 +43,8 @@ class MazeGame(gamelib.SimpleGame):
         self.render_time()
 
     def update_time(self):
+        this_tick = pygame.time.get_ticks()
         if self.is_started:
-            this_tick = pygame.time.get_ticks()
             self.time -= this_tick - self.last_ticks
         else:
             pass
@@ -61,16 +61,22 @@ class MazeGame(gamelib.SimpleGame):
 
     def render(self, surface):
         if self.is_started:
-            self.render_game()
+            self.render_game(surface)
         elif self.is_end:
-            
+            self.render_gameover(surface)
         else:
-            pass
+            self.render_start(surface)
 
     def render_game(self, surface):
         self.map.render(surface)
         self.player.render(surface)
         surface.blit(self.time_image, (20, MazeGame.HEIGHT - 50))
+
+    def render_gameover(self, surface):
+        pass
+
+    def render_start(self, surface):
+        pass
 
     def on_key_up(self,key):
         if self.is_started:
@@ -84,7 +90,7 @@ class MazeGame(gamelib.SimpleGame):
                 self.player.right()
         else:
             if key == K_SPACE:
-                print "eiei"
+                print "Game start!"
                 self.start_game()
 
 def main():
