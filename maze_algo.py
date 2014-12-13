@@ -41,5 +41,4 @@ def make_maze(walk_limit, w=16, h=8):
 			printer = printer + str(number)
 		print printer
 		num.append(row)
-	print num[0]
 	return num

@@ -13,7 +13,7 @@ class Map(object):
         self.map = make_maze(walk_limit=Map.WALK_LIMIT,
                             w=(column-1)/2, 
                             h=(row-1)/2)
-        self.map[2][2] = -1
+        self.map[row-2][column-2] = -1
         self.piece_size = piece_size
 
     def walkto(self, x, y, before_x, before_y):
@@ -33,10 +33,14 @@ class Map(object):
             y = y + 1
 
     def render_piece(self, surface, x, y, piece):
-        color_code = int(float(piece)*255 / float(Map.WALK_LIMIT))
         s = pygame.Surface((self.piece_size, self.piece_size))
-        s.set_alpha(color_code)
-        s.fill((255,255,255))
+        if piece != -1:
+            color_code = int(float(piece)*255 / float(Map.WALK_LIMIT))
+            s.set_alpha(color_code)
+            s.fill((255,255,255))
+        else:
+            s.set_alpha(255)
+            s.fill((0,200,0))
         surface.blit(s, (x * self.piece_size, y * self.piece_size)) 
 
 #########################################
