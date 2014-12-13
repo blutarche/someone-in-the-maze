@@ -1,6 +1,6 @@
 from random import shuffle, randrange
  
-def make_maze(w = 16, h = 8):
+def make_maze(walk_limit, w=16, h=8):
 	vis = [[0] * w + [1] for _ in range(h)] + [[1] * (w + 1)]
 	ver = [["# "] * w + ['#'] for _ in range(h)] + [[]]
 	hor = [["##"] * w + ['#'] for _ in range(h + 1)]
@@ -26,4 +26,18 @@ def make_maze(w = 16, h = 8):
 	for line in grid:
 		print ''.join(line)
 
-	return grid
+	num = [[]]
+	for line in grid:
+		row = []
+		for piece in line:
+			if piece != '#':
+				row.append(walk_limit)
+			else:
+				row.append(0)
+		printer = ''
+		for number in row:
+			printer = printer + str(number)
+		print printer
+		num.append(row)
+
+	return num
