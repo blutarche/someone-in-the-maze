@@ -1,6 +1,9 @@
 import pygame
 from pygame.locals import *
 
+
+'''
+
 class Ball(object):
 
     def __init__(self, radius, color, pos, speed=(100,0)):
@@ -61,3 +64,4 @@ class Player(object):
                                      self.width),
                          2)
         
+'''
