@@ -40,7 +40,7 @@ class MazeGame(gamelib.SimpleGame):
         self.map = Map(row=MazeGame.ROW, 
                         column=MazeGame.COLUMN, 
                         piece_size=self.piece_size)
-        self.player = Player(size=self.piece_size, pos=(61,28), color=MazeGame.RED, gamemap=self.map)
+        self.player = Player(size=self.piece_size, pos=(1, 1), color=MazeGame.RED, gamemap=self.map)
 
     def update(self):
         if self.is_started:
@@ -84,11 +84,12 @@ class MazeGame(gamelib.SimpleGame):
         surface.blit(self.time_image, (MazeGame.WIDTH/2 - 25, MazeGame.HEIGHT - 50))
 
     def render_gameover(self, surface):
-        pass
+        surface.fill((255,128,128))
+        self.render_message(surface, "YOU LOSE!", 60, 70)
+        self.render_message(surface, "You didn't finished maze", 147, 50)
+        self.render_message(surface, "Press Space to restart", 135, -40)
 
     def render_win(self, surface):
-        self.map.render(surface)
-        self.player.render(surface)
         surface.fill((128,255,128))
         time_in_sec = (MazeGame.TIME - self.time)/1000
         seconds = time_in_sec % 60
