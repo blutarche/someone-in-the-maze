@@ -18,15 +18,17 @@ def make_maze(walk_limit, w=16, h=8):
  
 	walk(randrange(w), randrange(h))
 
-	grid = [[]]
+	grid = []
 	for (a, b) in zip(hor, ver):
-		grid.append(''.join(a))
-		grid.append(''.join(b))
+		if a != []:
+			grid.append(''.join(a))
+		if b != []:
+			grid.append(''.join(b))
 		#print(''.join(a + ['\n'] + b))
 	for line in grid:
 		print ''.join(line)
 
-	num = [[]]
+	num = []
 	for line in grid:
 		row = []
 		for piece in line:
@@ -39,5 +41,5 @@ def make_maze(walk_limit, w=16, h=8):
 			printer = printer + str(number)
 		print printer
 		num.append(row)
-
+	print num[0]
 	return num

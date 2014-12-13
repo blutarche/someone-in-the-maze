@@ -13,12 +13,13 @@ class Map(object):
         self.map = make_maze(walk_limit=Map.WALK_LIMIT,
                             w=(column-1)/2, 
                             h=(row-1)/2)
+        self.map[2][2] = -1
         self.piece_size = piece_size
 
     def walkto(self, x, y, before_x, before_y):
         if self.map[y][x]>0:
-            return True
             self.map[before_y][before_x] -= 1
+            return True
         else:
             return False
 
@@ -33,7 +34,6 @@ class Map(object):
 
     def render_piece(self, surface, x, y, piece):
         color_code = int(float(piece)*255 / float(Map.WALK_LIMIT))
-        color = pygame.Color(color_code, color_code, color_code, 0);
         s = pygame.Surface((self.piece_size, self.piece_size))
         s.set_alpha(color_code)
         s.fill((255,255,255))
@@ -49,28 +49,28 @@ class Player(object):
         self.size = size
 
     def up(self):
-        if is_walkable(self.x, self.y - 1, self.x, self.y):
+        if self.is_walkable(self.x, self.y - 1, self.x, self.y):
             self.y = self.y - 1
 
     def down(self):
-        if is_walkable(self.x, self.y + 1, self.x, self.y):
+        if self.is_walkable(self.x, self.y + 1, self.x, self.y):
             self.y = self.y + 1
 
     def left(self):
-        if is_walkable(self.x - 1, self.y, self.x, self.y):
+        if self.is_walkable(self.x - 1, self.y, self.x, self.y):
             self.x = self.x - 1
 
     def right(self):
-        if is_walkable(self.x + 1, self.y, self.x, self.y):
+        if self.is_walkable(self.x + 1, self.y, self.x, self.y):
             self.x = self.x + 1
 
     def is_walkable(self, x, y, before_x, before_y):
-        print "Walk from (%d,%d) to (%d,%d)" % (x, y, before_x, before_y)
+        print "Walk from (%d,%d) to (%d,%d)" % (before_x, before_y, x ,y)
         return self.map.walkto(x, y, before_x, before_y)
 
     def render(self, surface):
         x = self.x + 1
-        y = self.y + 3
+        y = self.y + 1
         radius = self.size / 2
         pos_render = (x*self.size + radius , y*self.size + radius)
         pygame.draw.circle(surface, self.color, pos_render, radius, 0)
