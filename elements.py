@@ -32,15 +32,12 @@ class Map(object):
             y = y + 1
 
     def render_piece(self, surface, x, y, piece):
-        color_code = int(float(piece) / float(Map.WALK_LIMIT))*255
-        color = pygame.Color(color_code, color_code, color_code);
-        pygame.draw.rect(surface,
-                         color,
-                         pygame.Rect(x * self.piece_size,
-                                     y * self.piece_size,
-                                     self.piece_size,
-                                     self.piece_size),
-                         0)
+        color_code = int(float(piece)*255 / float(Map.WALK_LIMIT))
+        color = pygame.Color(color_code, color_code, color_code, 0);
+        s = pygame.Surface((self.piece_size, self.piece_size))
+        s.set_alpha(color_code)
+        s.fill((255,255,255))
+        surface.blit(s, (x * self.piece_size, y * self.piece_size)) 
 
 #########################################
 class Player(object):
