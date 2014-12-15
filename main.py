@@ -11,16 +11,16 @@ class MazeGame(gamelib.SimpleGame):
     GREEN = pygame.Color('green')
     RED   = pygame.Color('red')
 
-    ROW = 31
-    COLUMN = 63
+    ROW = 53
+    COLUMN = 105
 
     HEIGHT = 700
     WIDTH = 1300
 
-    TIME = 120999
+    TIME = 300999
 
     def __init__(self):
-        super(MazeGame, self).__init__('Collapsing Maze', MazeGame.BLACK, window_size=(MazeGame.WIDTH, MazeGame.HEIGHT))
+        super(MazeGame, self).__init__('Collapsing Maze', MazeGame.BLACK, window_size=(MazeGame.WIDTH, MazeGame.HEIGHT), fps=10)
         self.piece_size = MazeGame.WIDTH / MazeGame.COLUMN
         self.is_started = False
         self.is_lose = False
@@ -45,6 +45,7 @@ class MazeGame(gamelib.SimpleGame):
     def update(self):
         self.update_time()
         if self.is_started:
+            self.move_player()
             self.check_finish()
 
     def update_time(self):
@@ -107,17 +108,18 @@ class MazeGame(gamelib.SimpleGame):
         self.greeting_image = self.font.render("Press Space to start", 0, MazeGame.WHITE)
         surface.blit(self.greeting_image, (MazeGame.WIDTH/2 - 120, MazeGame.HEIGHT/2 - 10))
 
+    def move_player(self):
+        if self.is_key_pressed(K_UP):
+            self.player.up()
+        if self.is_key_pressed(K_DOWN):
+            self.player.down()
+        if self.is_key_pressed(K_LEFT):
+            self.player.left()
+        if self.is_key_pressed(K_RIGHT):
+            self.player.right()
+
     def on_key_up(self,key):
-        if self.is_started:
-            if key == K_UP:
-                self.player.up()
-            if key == K_DOWN:
-                self.player.down()
-            if key == K_LEFT:
-                self.player.left()
-            if key == K_RIGHT:
-                self.player.right()
-        else:
+        if not self.is_started:
             if key == K_SPACE:
                 print "Game start!"
                 self.start_game()

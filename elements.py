@@ -5,7 +5,7 @@ from maze_algo import make_maze
 
 class Map(object):
 
-    WALK_LIMIT = 3
+    WALK_LIMIT = 5
 
     def __init__(self, row, column, piece_size):
         self.row = row
